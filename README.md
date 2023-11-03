@@ -14,6 +14,7 @@ dockerコンテナ上で動かしたい場合は、docker環境を用意して�
 
 ## テーブルを作るとき
 `create table`をするときは`app/migrations`下に`YYYYMMDDHH_hogehoge`の形式でファイルを新しく作成してください
+`migrations`下に配置されたマイグレーションファイルは、FastAPIのサーバが起動するたびにすべて実行されます
 
 # 進め方
 以下の手順を繰り返していく形で進めます。
