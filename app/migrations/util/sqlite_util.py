@@ -24,21 +24,3 @@ def create_table_sql(table_name: str, columns: str) -> str:
     """
 
     return sql
-
-def execute_query(sql: str) -> list:
-    conn: Connection = generate_connect()
-    cursor: Cursor = conn.cursor()
-    cursor.execute(sql)  # SQLクエリを実行
-    result = cursor.fetchall()  # 結果を取得
-    connection.close()  # 接続を閉じる
-    return result
-
-def execute_update(sql: str, data: list) -> None:
-    conn: Connection = generate_connect()
-    cursor: Cursor = conn.cursor()
-    if data:
-        cursor.executemany(sql, data)  # 複数のレコードを処理
-    else:
-        cursor.execute(sql)  # 1つのクエリを実行
-    connection.commit()  # 変更をコミット
-    connection.close()  # 接続を閉じる
