@@ -16,15 +16,6 @@ DB_NAME: str = os.environ.get("DB_NAME")
 def generate_connect() -> Cursor:
     return connect(DB_NAME)
 
-def create_table_sql(table_name: str, columns: str) -> str:
-    sql = """
-    CREATE TABLE IF NOT EXISTS {0} (
-        {1}
-    );
-    """.format(table_name, columns)
-
-    return sql
-
 def execute_query(sql: str) -> list:
     conn: Connection = generate_connect()
     cursor: Cursor = conn.cursor()
