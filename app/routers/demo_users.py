@@ -28,15 +28,9 @@ async def startup_event() -> None:
 
 @router.get("/")
 async def show() -> dict:
-    conn: Connection = generate_connect()
-    cursor: Cursor = conn.cursor()
 
     sql: str ="select * from demo_users;"
-    cursor.execute(sql)
-    items: list = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
+    items: list = execute_query(sql)
 
     response: dict = {}
     for item in items:
@@ -46,39 +40,22 @@ async def show() -> dict:
 
 @router.post("/")
 async def create(prop: DemoUserProp) -> dict:
-    conn: Connection = generate_connect()
-    cursor: Cursor = conn.cursor()
-
     sql: str = "insert into demo_users (name, email) values (?, ?);"
-    cursor.execute(sql, (prop.name, prop.email))
-
-    conn.commit()
-    conn.close()
+    execute_update(sql, [(prop.name, prop.email)])
 
     return { "status": "ok" }
 
 @router.put("/{id}")
 async def update(id: int, prop: DemoUserProp) -> dict:
-    conn: Connection = generate_connect()
-    cursor: Cursor = conn.cursor()
 
     sql: str = "update demo_users set name = ? where id = ?"
-    cursor.execute(sql, (prop.name, id))
-
-    conn.commit()
-    conn.close()
+    execute_update(sql, [(prop.name, id)])
 
     return { "status": "ok" }
 
 @router.delete("/{id}")
 async def destroy(id: int) -> dict:
-    conn: Connection = generate_connect()
-    cursor: Cursor = conn.cursor()
-
     sql: str = "delete from demo_users where id = ?"
-    cursor.execute(sql, (id,))
-
-    conn.commit()
-    conn.close()
+    execute_update(sql, [(id,)])
 
     return { "status": "ok" }
