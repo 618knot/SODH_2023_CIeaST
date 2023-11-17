@@ -1,12 +1,10 @@
 from fastapi import FastAPI
-from routers import users
+from routers import users, sessions
 
 import os
 
 
 app = FastAPI()
-
-app.include_router(users.router)
 
 # マイグレーションもどきをする(あんまりやりたくない)
 @app.on_event("startup")
@@ -20,3 +18,6 @@ def startup_event() -> None:
 @app.get("/")
 async def hello() -> str:
     return "HELLO"
+
+app.include_router(users.router)
+app.include_router(sessions.router)
