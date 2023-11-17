@@ -16,10 +16,10 @@ DB_NAME: str = os.environ.get("DB_NAME")
 def generate_connect() -> Cursor:
     return connect(DB_NAME)
 
-def execute_query(sql: str) -> list:
+def execute_query(sql: str, data: set) -> list:
     conn: Connection = generate_connect()
     cursor: Cursor = conn.cursor()
-    cursor.execute(sql)  # SQLクエリを実行
+    cursor.execute(sql, data)  # SQLクエリを実行
     result = cursor.fetchall()  # 結果を取得
     conn.close()  # 接続を閉じる
     return result
