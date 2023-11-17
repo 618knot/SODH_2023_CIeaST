@@ -25,6 +25,11 @@ class UserProp(BaseModel):
 async def create(props: UserProp):
     # TODO: エラーハンドリング
     sql: str = "insert into users (name, email, password) values (?, ?, ?);"
-    execute_update(sql, [(props.name, props.email, props.password)])
 
-    return { "status": "ok" }
+    try:
+        execute_update(sql, [(props.name, props.email, props.password)])
+        response = { "status": "ok" }
+    except:
+        response = { "status": "error", "message": "エラーが発生しました" }
+
+    return response
