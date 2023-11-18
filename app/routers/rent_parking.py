@@ -1,5 +1,5 @@
 """
-ユーザー
+登録
 """
 
 from typing import Optional
