@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from .util.sqlite_util import *
 
-RESOURCE_NAME: str = "rent_parking"
+RESOURCE_NAME: str = "apply_parking"
 RESOURCE_COLUMNS: list = ["parking_id", "rent_name", "address", "fee", "comment", "rent_term"]
 
 router: APIRouter = APIRouter(
@@ -23,7 +23,7 @@ class UserProp(BaseModel):
     comment: str
     rent_term: str
 
-@router.post("/{id}/rent/{parking_id}")
+@router.post("/{id}/apply/{parking_id}")
 async def create(props: UserProp):
     # TODO: 空文字を入力された時の対策
     sql: str = "insert into parking_spaces (rent_term) values (?);"
@@ -31,7 +31,7 @@ async def create(props: UserProp):
 
     return response
 
-@router.get("/{id}/rent/{parking_id}")
+@router.get("/{id}/apply/{parking_id}")
 async def applyGet(parking_id: int):
     try:
         sql: str = f"select parking_id, start_date, address, fee, comment from rent where parking_id = ?;"
