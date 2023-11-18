@@ -54,15 +54,14 @@ def select_chat_room(tenant_id: int,owner_id: int,parking_id: int):
 def create_chat_room(tenant_id: int,owner_id: int,parking_id: int):
     # TODO: 駐車場の情報をもらう形式
     # TODO: ログインしているユーザIDをクッキーから取得
-    # チャットルームが存在しているか確認
     room = select_chat_room(tenant_id, owner_id, parking_id)
-    if not room: # 存在していなければ新しくチャットルームを作成
+    if not room: # チャットルームが存在していなければ新しく作成
         sql: str = "insert into chat_rooms (tenant, owner, parking) values (?, ?, ?);"
         execute_update(sql, [(tenant_id, owner_id, parking_id)])
         response = execute_update(sql, [(tenant_id, owner_id, parking_id)])
         # TODO: チャットルームを返す形式
         return select_chat_room(tenant_id, owner_id, parking_id) #仮
-    else: # 存在していればそのチャットルームを返す
+    else: # チャットルームが存在していればそれを返す
         # TODO: チャットルームを返す形式
         return room # 仮
     # テスト用
@@ -80,9 +79,11 @@ def get_chat_room(room_id: int):
 
 @router.websocket("/end_point")
 async def websocket_endpoint(ws: WebSocket):
+    # TODO: 送信したユーザIDを取得
+    user_id = 1 #仮
     await ws.accept()
     while True:
-        data = await ws.receive_text()
+        message = await ws.receive_text()
         await ws.send_text(f"Message text was: {data}")
     # await ws.accept()
     # # クライアントを識別するためのIDを取得
