@@ -1,6 +1,7 @@
 from fastapi import APIRouter,WebSocket
 from .util.sqlite_util import *
 from fastapi.responses import HTMLResponse
+import datetime
 
 RESOURCE_NAME: str = "chat_rooms"
 RESOURCE_COLUMNS: list = ["id", "tenant_id", "owner_id", "parking_id"]
@@ -10,6 +11,7 @@ router = APIRouter(
     tags=[RESOURCE_NAME]
 )
 
+# テスト用のHTML
 html = """
 <!DOCTYPE html>
 <html>
@@ -26,14 +28,14 @@ html = """
         </ul>
         <script>
             var ws = new WebSocket("ws://localhost:8000/end_point");
-            ws.onmessage = function(event) {
+            ws.onmessage = function(event) { //エンドポイントからのsendを受信する関数
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
                 var content = document.createTextNode(event.data)
                 message.appendChild(content)
                 messages.appendChild(message)
             };
-            function sendMessage(event) {
+            function sendMessage(event) { //エンドポイントに情報を送信する関数
                 var input = document.getElementById("messageText")
                 ws.send(input.value)
                 input.value = ''
@@ -77,14 +79,26 @@ def get_chat_room(room_id: int):
     # TODO: メッセージを返す形式
     return messages
 
+def get_user_name(user_id: int):
+    sql: str = "select name from users where id = ?"
+    user_name: str = execute_query(sql, user_id)
+    return user_name
+
+def save_message(user_id: int,message: str):
+    sql: str = "insert into chat_messages (speaker, message, time, is_read, room_id) values(?, ?, ?, ?, ?);"
+    now = datetime.datetime.now()
+    response = execute_update(sql,[(get_user_name(user_id), message, now, 0, RESOURCE_COLUMNS[0])])
+    return response
+
 @router.websocket("/end_point")
 async def websocket_endpoint(ws: WebSocket):
-    # TODO: 送信したユーザIDを取得
+    # TODO: 送信したユーザのIDを取得
     user_id = 1 #仮
     await ws.accept()
     while True:
         message = await ws.receive_text()
-        await ws.send_text(f"Message text was: {data}")
+        await ws.send_text(f"{get_user_name(user_id)}:{message}")
+        response = await save_message(user_id, message)
     # await ws.accept()
     # # クライアントを識別するためのIDを取得
     # key = ws.headers.get('sec-websocket-key')
