@@ -9,10 +9,10 @@ sql = create_table_sql(
     table_name="rent_parking",
     columns="""
     parking_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    start_date DATE,
-    fee INTEGER,
+    start_date TEXT NOT NULL,
+    fee INTEGER NOT NULL,
     comment TEXT,
-    address TEXT PRIMARY KEY,
+    address TEXT PRIMARY KEY NOT NULL,
     """)
 
 cursor.execute(sql)
