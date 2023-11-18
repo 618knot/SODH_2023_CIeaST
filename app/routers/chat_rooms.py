@@ -51,25 +51,20 @@ def select_chat_room(tenant_id: int,owner_id: int,parking_id: int):
     room: list = execute_query(sql, [(tenant_id, owner_id, parking_id)])
     return room
 
+# チャットルームの作成
 #TODO: postで確認してからroom_idでリダイレクト?
-@router.get("/")
-def create_chat_room(tenant_id: int,owner_id: int,parking_id: int):
+@router.post("/")
+def create_chat_room(tenant_id: int,owner_id: int,parking_id: int) -> dict:
     # TODO: 駐車場の情報をもらう形式
     # TODO: ログインしているユーザIDをクッキーから取得
-    room = select_chat_room(tenant_id, owner_id, parking_id)
-    if not room: # チャットルームが存在していなければ新しく作成
+    if not select_chat_room(tenant_id, owner_id, parking_id): # チャットルームが存在していなければ新しく作成
         sql: str = "insert into chat_rooms (tenant, owner, parking) values (?, ?, ?);"
-        execute_update(sql, [(tenant_id, owner_id, parking_id)])
         response = execute_update(sql, [(tenant_id, owner_id, parking_id)])
-        # TODO: チャットルームを返す形式
-        return select_chat_room(tenant_id, owner_id, parking_id) #仮
-    else: # チャットルームが存在していればそれを返す
-        # TODO: チャットルームを返す形式
-        return room # 仮
-    # テスト用
-    # return HTMLResponse(html)
+    else: # チャットルームが存在していれば存在していることを返す
+        response = { "status": "ok", "message": "chat_room already exists" }
+    return response
 
-# 各チャットルームの取得
+# チャットルームの取得
 # URLにパラメータがあると勝手に知らん人のチャットに行ける脆弱性
 @router.get("/{id}")
 def get_chat_room(room_id: int):
@@ -91,8 +86,8 @@ def get_user_name(user_id: int):
     user_name: str = execute_query(sql, user_id)
     return user_name
 
-def save_message(user_id: int,message: str):
-    sql: str = "insert into chat_messages (speaker, message, time, is_read, room_id) values(?, ?, ?, ?, ?);"
+def save_message(user_id: int,message: str) -> dict:
+    sql: str = "insert into chat_messages (speaker, message, time, is_read, room_id) values (?, ?, ?, ?, ?);"
     now = datetime.datetime.now()
     response = execute_update(sql,[(get_user_name(user_id), message, now, 0, RESOURCE_COLUMNS[0])])
     return response
