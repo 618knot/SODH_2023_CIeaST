@@ -22,7 +22,7 @@ class LoginProp(BaseModel):
 @router.post("/login")
 async def login(props: LoginProp):
     try:
-        sql: str = f"select id from users where email = ?and password = ?;"
+        sql: str = "select id from users where email = ?and password = ?;"
         result: list = execute_query(sql, (props.email, props.password))
         user_id = result[0]
 
@@ -33,7 +33,9 @@ async def login(props: LoginProp):
         sql: str = "insert into sessions (user_id) values (?);"
         execute_update(sql, [user_id,])
 
-        return { "status": "ok" }
+        sql: str = "select id from sessions where user_id = (?);"
+        session_id = execute_query(sql, user_id)[0][0]
+        return { "status": "ok", "session id": session_id }
     except:
         return { "status": "error", "message": "エラーが発生しました" }
 
