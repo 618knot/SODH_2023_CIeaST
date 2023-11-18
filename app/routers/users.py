@@ -23,13 +23,8 @@ class UserProp(BaseModel):
 
 @router.post("/register")
 async def create(props: UserProp):
-    # TODO: エラーハンドリング
+    # TODO: 空文字を入力された時の対策
     sql: str = "insert into users (name, email, password) values (?, ?, ?);"
-
-    try:
-        execute_update(sql, [(props.name, props.email, props.password)])
-        response = { "status": "ok" }
-    except:
-        response = { "status": "error", "message": "エラーが発生しました" }
+    response = execute_update(sql, [(props.name, props.email, props.password)])
 
     return response

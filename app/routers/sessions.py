@@ -31,7 +31,7 @@ async def login(props: LoginProp):
     
     try:
         sql: str = "insert into sessions (user_id) values (?);"
-        execute_update(sql, [user_id,])
+        update_successed = execute_update(sql, [user_id,]) # execute_updateが値を返すように改修したため
 
         sql: str = "select id from sessions where user_id = (?);"
         session_id = execute_query(sql, user_id)[0][0]
