@@ -1,5 +1,5 @@
 """
-ユーザー
+登録
 """
 
 from typing import Optional
@@ -18,7 +18,7 @@ router: APIRouter = APIRouter(
 
 class UserProp(BaseModel):
     start_date: str
-    fee: str
+    fee: int
     comment: str
     address: str
 
