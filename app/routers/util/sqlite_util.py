@@ -39,8 +39,8 @@ def execute_update(sql: str, data: list) -> dict:
         response = { "status": "ok" }
     except sqlite3.IntegrityError as e:
         conn.close()  # 例外が出た時のデータベースロックを回避するため
-        response = { "status": "error", "massage": str(e) }
+        response = { "status": "error", "message": str(e) }
     except Exception as e:
         conn.close()  # 例外が出た時のデータベースロックを回避するため
-        response = { "status": "error", "massage": str(e) }
+        response = { "status": "error", "message": str(e) }
     return response
