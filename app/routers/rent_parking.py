@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from .util.sqlite_util import *
 
-RESOURCE_NAME: str = "parking_spaces"
+RESOURCE_NAME: str = "rent_parking"
 RESOURCE_COLUMNS: list = ["parking_id", "start-date", "fee", "comment", "address"]
 
 router: APIRouter = APIRouter(
