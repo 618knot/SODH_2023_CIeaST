@@ -16,7 +16,7 @@ DB_NAME: str = os.environ.get("DB_NAME")
 def generate_connect() -> Cursor:
     return connect(DB_NAME)
 
-def execute_query(sql: str, data: set) -> list:
+def execute_query(sql: str, data: tuple) -> list:
     conn: Connection = generate_connect()
     cursor: Cursor = conn.cursor()
     cursor.execute(sql, data)  # SQLクエリを実行
