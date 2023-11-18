@@ -1,12 +1,12 @@
 from fastapi import FastAPI
-from routers import demo_users
+from routers import users
 
 import os
 
 
 app = FastAPI()
 
-app.include_router(demo_users.router)
+app.include_router(users.router)
 
 # マイグレーションもどきをする(あんまりやりたくない)
 @app.on_event("startup")
