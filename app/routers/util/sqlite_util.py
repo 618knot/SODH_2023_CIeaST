@@ -3,6 +3,7 @@ SQLiteの汎用処理
 """
 
 from sqlite3 import connect, Cursor, Connection
+import sqlite3
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -17,16 +18,29 @@ def generate_connect() -> Cursor:
     return connect(DB_NAME)
 
 def execute_query(sql: str, data: tuple) -> list:
-    conn: Connection = generate_connect()
-    cursor: Cursor = conn.cursor()
-    cursor.execute(sql, data)  # SQLクエリを実行
-    result = cursor.fetchall()  # 結果を取得
-    conn.close()  # 接続を閉じる
+    try:
+        conn: Connection = generate_connect()
+        cursor: Cursor = conn.cursor()
+        cursor.execute(sql, data)  # SQLクエリを実行
+        result = cursor.fetchall()  # 結果を取得
+        conn.close()  # 接続を閉じる
+    except Exception as e:
+        conn.close()  # 例外が出た時のデータベースロックを回避するため
+        result = ["error"] #TODO: より適した返し方に変更する
     return result
 
-def execute_update(sql: str, data: list) -> None:
-    conn: Connection = generate_connect()
-    cursor: Cursor = conn.cursor()
-    cursor.executemany(sql, data)  # 複数のレコードを処理
-    conn.commit()  # 変更をコミット
-    conn.close()  # 接続を閉じる
+def execute_update(sql: str, data: list) -> dict:
+    try:
+        conn: Connection = generate_connect()
+        cursor: Cursor = conn.cursor()
+        cursor.executemany(sql, data)  # 複数のレコードを処理
+        conn.commit()  # 変更をコミット
+        conn.close()  # 接続を閉じる
+        response = { "status": "ok" }
+    except sqlite3.IntegrityError as e:
+        conn.close()  # 例外が出た時のデータベースロックを回避するため
+        response = { "status": "error", "massage": str(e) }
+    except Exception as e:
+        conn.close()  # 例外が出た時のデータベースロックを回避するため
+        response = { "status": "error", "massage": str(e) }
+    return response
