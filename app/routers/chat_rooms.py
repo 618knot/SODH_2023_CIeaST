@@ -3,7 +3,7 @@ from .util.sqlite_util import *
 from fastapi.responses import HTMLResponse
 
 RESOURCE_NAME: str = "chat_rooms"
-RESOURCE_COLUMNS: list = ["id", "user_id"]
+RESOURCE_COLUMNS: list = ["id", "tenant_id", "owner_id", "parking_id"]
 
 router = APIRouter(
     prefix=f"/{RESOURCE_NAME}",
