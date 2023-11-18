@@ -76,6 +76,13 @@ def get_chat_room(room_id: int):
     # チャットルームに紐づけられたメッセージを取得
     sql: str = "select * from chat_messages where chat_rooms = ?;"
     messages: list = execute_query(sql, room_id)
+
+    # 既読をつける処理
+    # TODO: ログインしているユーザIDをクッキーから取得
+    user_id = 1 # 仮
+    sql: str = "update chat_messages set is_read = ? where not speaker = ?;"
+    response = execute_update(sql,[(1, get_user_name(user_id))])
+
     # TODO: メッセージを返す形式
     return messages
 
