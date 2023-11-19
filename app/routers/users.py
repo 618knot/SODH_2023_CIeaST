@@ -32,10 +32,9 @@ async def create(props: UserProp):
 #オーナーが通知を取得
 @router.post("/chat_notice")
 async def notice():
-    # TODO: ログインしているユーザIDをクッキーから取得
-    user_id = 1 # 仮
+    # 自分がオーナーのチャットルームのidを取得
     sql: str = "select id from chat_rooms where owner_id = ?"
-    room_ids: list = execute_query(sql, (user_id,))
+    room_ids: list = execute_query(sql, (RESOURCE_COLUMNS[0],))
 
     if not room_ids:
         return { "status": "ok", "notices": 0 }
