@@ -28,3 +28,23 @@ async def create(props: UserProp):
     response = execute_update(sql, [(props.name, props.email, props.password)])
 
     return response
+
+#オーナーが通知を取得
+@router.post("/chat_notice")
+async def notice():
+    # TODO: ログインしているユーザIDをクッキーから取得
+    user_id = 1 # 仮
+    sql: str = "select id from chat_rooms where owner_id = ?"
+    room_ids: list = execute_query(sql, (user_id,))
+
+    if not room_ids:
+        return { "status": "ok", "notices": 0 }
+
+    sql: str = "select id from chat_messages where room_id = ? and is_read = ?"
+    notice_count = 0
+    for room_id in room_ids:
+        notices: list = execute_query(sql, [room_id, 0])
+        notice_count += notices.count()
+
+    return { "status": "ok", "notices": {notice_count} }
+
