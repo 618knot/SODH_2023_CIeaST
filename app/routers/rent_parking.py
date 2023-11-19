@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from .util.sqlite_util import *
 
 RESOURCE_NAME: str = "rent_parking"
-RESOURCE_COLUMNS: list = ["parking_id", "rent_user_name", "start-date", "fee", "comment", "address"]
+RESOURCE_COLUMNS: list = ["parking_id", "user_id", "rent_user_name", "start-date", "fee", "comment", "address"]
 
 router: APIRouter = APIRouter(
     prefix=f"/{RESOURCE_NAME}",
@@ -26,6 +26,7 @@ class ParkingProps(BaseModel):
 async def create(props: ParkingProps, session_id: int):
     sql: str = "select user_id from sessions where id = ?;"
     result: list = execute_query(sql, (session_id,))
+    user_id = result[0][0]
 
     sql: str = "select name from users where id = ?;"
     result: list = execute_query(sql, (result[0][0],))
@@ -33,7 +34,7 @@ async def create(props: ParkingProps, session_id: int):
     print(rent_user_name)
 
     # TODO: 空文字を入力された時の対策
-    sql: str = "insert into rent_parking (rent_user_name, start_date, fee, comment, address) values (?, ?, ?, ?, ?);"
-    response = execute_update(sql, [(rent_user_name, props.start_date, props.fee, props.comment, props.address)])
+    sql: str = "insert into rent_parking (user_id, rent_user_name, start_date, fee, comment, address) values (?, ?, ?, ?, ?, ?);"
+    response = execute_update(sql, [(user_id, rent_user_name, props.start_date, props.fee, props.comment, props.address)])
 
     return response
