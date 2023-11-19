@@ -42,7 +42,7 @@ async def notice():
     sql: str = "select id from chat_messages where room_id = ? and is_read = ?"
     notice_count = 0
     for room_id in room_ids:
-        notices: list = execute_query(sql, [room_id, 0])
+        notices: list = execute_query(sql, [room_id[0], 0])
         notice_count += notices.count()
 
     return { "status": "ok", "notices": {notice_count} }

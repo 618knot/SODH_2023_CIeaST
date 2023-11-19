@@ -72,29 +72,28 @@ def get_chat_messages(room_id: int):
     # チャットルームに紐づけられたメッセージを取得
     sql: str = "select * from chat_messages where room_id = ?;"
     messages: list = execute_query(sql, (room_id,))
-
+    response = { "status": "ok", "messages": messages }
     # 既読をつける処理
     # TODO: ログインしているユーザIDをクッキーから取得
     user_id = 1 # 仮
     sql: str = "update chat_messages set is_read = ? where not speaker = ?;"
-    response = execute_update(sql,[1, get_user_name(user_id)])
+    response_successed = execute_update(sql,[1, get_user_name(user_id)])
 
     # TODO: メッセージを返す形式
-    return messages
+    return response
 
 @router.get("/")
 def get_chat_rooms(user_id: int):
     # 自分がオーナーのチャットルームを取得
     sql: str = "select id from chat_rooms where owner_id = ?;"
-    rooms: list = execute_query(sql, (user_id,))[0]
-    print(rooms)
+    rooms: list = execute_query(sql, (user_id,))
     response = { "status": "ok", "parking-addresses": [] }
     if len(rooms) != 0:
         # TODO: N+1になっているのでJOIN句などを使って修正
         for room in rooms:
             print(room)
             sql: str = "select address from rent_parking where id = ?;"
-            response["parking-addresses"].append(execute_query(sql, (room,)))
+            response["parking-addresses"].extend(execute_query(sql, (room[0],))[0])
     return response
 
 def get_user_name(user_id: int):
