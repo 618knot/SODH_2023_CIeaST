@@ -9,6 +9,7 @@ sql = create_table_sql(
     table_name="rent_parking",
     columns="""
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
     rent_user_name TEXT NOT NULL,
     start_date TEXT NOT NULL,
     fee INTEGER NOT NULL,
