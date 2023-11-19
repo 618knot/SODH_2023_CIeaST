@@ -12,10 +12,9 @@ sql = create_table_sql(
     owner_id INTEGER,
     parking_id INTEGER,
     FOREIGN KEY (tenant_id) REFERENCES users (id),
-    FOREIGN KEY (owner_id) REFERENCES users (id)
+    FOREIGN KEY (owner_id) REFERENCES users (id),
+    FOREIGN KEY (parking_id) REFERENCES rent_parking (id)
     """)
-# TODO: 駐車場テーブルが完成したらこれにする
-# FOREIGN KEY (parking_id) REFERENCES #{駐車場のテーブル} (id)
 
 cursor.execute(sql)
 conn.commit()

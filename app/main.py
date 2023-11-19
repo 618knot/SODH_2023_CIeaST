@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import users, sessions, chat_rooms
+from routers import users, sessions, rent_parking, chat_rooms
 from starlette.middleware.cors import CORSMiddleware
 
 import os
@@ -34,3 +34,4 @@ async def hello() -> str:
 app.include_router(users.router)
 app.include_router(sessions.router)
 app.include_router(chat_rooms.router)
+app.include_router(rent_parking.router)
