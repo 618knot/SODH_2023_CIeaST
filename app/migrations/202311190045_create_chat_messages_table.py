@@ -11,6 +11,7 @@ sql = create_table_sql(
     table_name="chat_messages",
     columns="""
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    room_id INTEGER,
     speaker TEXT,
     message TEXT,
     time TEXT,

@@ -47,8 +47,8 @@ html = """
 """
 
 def select_chat_room(tenant_id: int,owner_id: int,parking_id: int):
-    sql: str = "select * from chat_rooms where tenant = ? and owner = ? and parking = ? limit 1;"
-    room: list = execute_query(sql, [(tenant_id, owner_id, parking_id)])
+    sql: str = "select * from chat_rooms where tenant_id = ? and owner_id = ? and parking_id = ?;"
+    room: list = execute_query(sql, [tenant_id, owner_id, parking_id])
     return room
 
 # チャットルームの作成
@@ -57,8 +57,9 @@ def select_chat_room(tenant_id: int,owner_id: int,parking_id: int):
 def create_chat_room(tenant_id: int,owner_id: int,parking_id: int) -> dict:
     # TODO: 駐車場の情報をもらう形式
     # TODO: ログインしているユーザIDをクッキーから取得
+    print(select_chat_room(tenant_id, owner_id, parking_id))
     if not select_chat_room(tenant_id, owner_id, parking_id): # チャットルームが存在していなければ新しく作成
-        sql: str = "insert into chat_rooms (tenant, owner, parking) values (?, ?, ?);"
+        sql: str = "insert into chat_rooms (tenant_id, owner_id, parking_id) values (?, ?, ?);"
         response = execute_update(sql, [(tenant_id, owner_id, parking_id)])
     else: # チャットルームが存在していれば存在していることを返す
         response = { "status": "ok", "message": "chat_room already exists" }
