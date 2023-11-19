@@ -60,37 +60,37 @@ def create_chat_room(tenant_id: int,owner_id: int,parking_id: int) -> dict:
     print(select_chat_room(tenant_id, owner_id, parking_id))
     if not select_chat_room(tenant_id, owner_id, parking_id): # チャットルームが存在していなければ新しく作成
         sql: str = "insert into chat_rooms (tenant_id, owner_id, parking_id) values (?, ?, ?);"
-        response = execute_update(sql, [(tenant_id, owner_id, parking_id)])
+        response = execute_update(sql, [tenant_id, owner_id, parking_id])
     else: # チャットルームが存在していれば存在していることを返す
         response = { "status": "ok", "message": "chat_room already exists" }
     return response
 
 # チャットルームの取得
 # URLにパラメータがあると勝手に知らん人のチャットに行ける脆弱性
-@router.get("/{id}")
+@router.get("/")
 def get_chat_room(room_id: int):
     # チャットルームに紐づけられたメッセージを取得
-    sql: str = "select * from chat_messages where chat_rooms = ?;"
-    messages: list = execute_query(sql, room_id)
+    sql: str = "select * from chat_messages where room_id = ?;"
+    messages: list = execute_query(sql, (room_id,))
 
     # 既読をつける処理
     # TODO: ログインしているユーザIDをクッキーから取得
     user_id = 1 # 仮
     sql: str = "update chat_messages set is_read = ? where not speaker = ?;"
-    response = execute_update(sql,[(1, get_user_name(user_id))])
+    response = execute_update(sql,[1, get_user_name(user_id)])
 
     # TODO: メッセージを返す形式
     return messages
 
 def get_user_name(user_id: int):
     sql: str = "select name from users where id = ?"
-    user_name: str = execute_query(sql, user_id)
+    user_name: str = execute_query(sql, (user_id,))
     return user_name
 
 def save_message(user_id: int,message: str) -> dict:
     sql: str = "insert into chat_messages (speaker, message, time, is_read, room_id) values (?, ?, ?, ?, ?);"
     now = datetime.datetime.now()
-    response = execute_update(sql,[(get_user_name(user_id), message, now, 0, RESOURCE_COLUMNS[0])])
+    response = execute_update(sql,[get_user_name(user_id), message, now, 0, RESOURCE_COLUMNS[0]])
     return response
 
 @router.websocket("/end_point")
