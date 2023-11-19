@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import users, sessions
+from routers import users, sessions, rent_parking
 from starlette.middleware.cors import CORSMiddleware
 
 import os
@@ -33,3 +33,4 @@ async def hello() -> str:
 
 app.include_router(users.router)
 app.include_router(sessions.router)
+app.include_router(rent_parking.router)
