@@ -8,11 +8,12 @@ cursor: Cursor = conn.cursor()
 sql = create_table_sql(
     table_name="rent_parking",
     columns="""
-    parking_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    rent_user_name TEXT NOT NULL,
     start_date TEXT NOT NULL,
     fee INTEGER NOT NULL,
     comment TEXT,
-    address TEXT PRIMARY KEY NOT NULL,
+    address TEXT UNIQUE NOT NULL
     """)
 
 cursor.execute(sql)
